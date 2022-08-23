@@ -17,7 +17,13 @@ let rec split s n =
     | _ -> [ s ])
   | false -> [ String.sub s 0 n ] @ split (string_after s n) n
 
-let seq_reverse = Seq.fold_left (fun h t -> Seq.cons t h) Seq.empty
+let seq_reverse s =
+  let rec rev_inner s_inner acc =
+    match Seq.uncons s_inner with
+    | None -> acc
+    | Some (h, t) -> rev_inner t (Seq.cons h acc)
+  in
+  rev_inner s Seq.empty
 
 let string_reverse s = String.of_seq (seq_reverse (String.to_seq s))
 
