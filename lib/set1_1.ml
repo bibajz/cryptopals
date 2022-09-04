@@ -64,30 +64,30 @@ let first_n_bits num n = num mod Int.shift_left 1 n
 
 let n_bits_after_m num n m = first_n_bits (Int.shift_right num m) n
 
-let padding_char = '='
-
-let padding_val = -1 (* special value indicating a padding character *)
+type base64 =
+  | Char of int
+  | Padding
 
 let rec bytelist_to_base64 l =
   match l with
   | e1 :: e2 :: e3 :: t ->
-    [ n_bits_after_m e1 6 2
-    ; Int.shift_left (first_n_bits e1 2) 4 + n_bits_after_m e2 4 4
-    ; Int.shift_left (first_n_bits e2 4) 2 + n_bits_after_m e3 2 6
-    ; first_n_bits e3 6
+    [ Char (n_bits_after_m e1 6 2)
+    ; Char (Int.shift_left (first_n_bits e1 2) 4 + n_bits_after_m e2 4 4)
+    ; Char (Int.shift_left (first_n_bits e2 4) 2 + n_bits_after_m e3 2 6)
+    ; Char (first_n_bits e3 6)
     ]
     @ bytelist_to_base64 t
   | [ e1; e2 ] ->
-    [ n_bits_after_m e1 6 2
-    ; Int.shift_left (first_n_bits e1 2) 4 + n_bits_after_m e2 4 4
-    ; Int.shift_left (first_n_bits e2 4) 2
-    ; padding_val
+    [ Char (n_bits_after_m e1 6 2)
+    ; Char (Int.shift_left (first_n_bits e1 2) 4 + n_bits_after_m e2 4 4)
+    ; Char (Int.shift_left (first_n_bits e2 4) 2)
+    ; Padding
     ]
   | [ e1 ] ->
-    [ n_bits_after_m e1 6 2
-    ; Int.shift_left (first_n_bits e1 2) 4
-    ; padding_val
-    ; padding_val
+    [ Char (n_bits_after_m e1 6 2)
+    ; Char (Int.shift_left (first_n_bits e1 2) 4)
+    ; Padding
+    ; Padding
     ]
   | [] -> []
 
@@ -159,13 +159,17 @@ let sextet_to_base64 n =
   | 61 -> '9'
   | 62 -> '+'
   | 63 -> '/'
-  | -1 -> padding_char (* Hackish, but works for now*)
   | _ -> raise Invalid_sextet
 
-let bytelist_to_base64_list l = List.map sextet_to_base64 (bytelist_to_base64 l)
+let to_base64 c =
+  match c with
+  | Char n -> sextet_to_base64 n
+  | Padding -> '='
+
+let bytelist_to_base64_list l = List.map to_base64 (bytelist_to_base64 l)
 
 (* TODO: Convert to Seq? *)
-let hexstring_to_base64 s =
+let base64_of_hexstring s =
   String.of_seq
     (List.to_seq
        (bytelist_to_base64_list (List.map int_of_hexstring (split s 2))))

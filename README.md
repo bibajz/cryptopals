@@ -9,5 +9,8 @@ DIY solutions written in OCaml.
 
 ### Non-goals
 
-* do not dive deeper than necessary into auxiliary Ocaml tools - as of today (23rd August '22) I use `dune` for project managment.
-I made it work, but do not have time yet to figure out how. Similarly with `.ocamlformat`, the settings are "borrowed" (:D) from first project I saw using it.
+* Previously, I wanted to get away with not knowing the auxiliary tools of OCaml ecosystem. That was a mistake - see the note below.
+
+**EDIT (3rd September '22)** I was mistaken - Getting to know the auxiliary tools and libraries of OCaml is necessary for this project to fly the distance.
+I was converted the test cases to [`Alcotest`](https://github.com/mirage/alcotest), I was yet unsuccessful with integrating the [`QCheck`](https://github.com/c-cube/qcheck) library.
+Will look into that + better `dune` options soon.
