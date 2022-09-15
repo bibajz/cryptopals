@@ -18,6 +18,6 @@ let test_solution () =
 
 let test_cases =
   [ ("hex of int - 255", `Quick, test_hex)
-  ; ("hex of int - 0", `Quick, test_hex2) (* TODO: Fails! *)
+  ; ("hex of int - 0", `Quick, test_hex2)
   ; ("set 1.2 - solution", `Quick, test_solution)
   ]

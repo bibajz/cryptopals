@@ -43,9 +43,11 @@ let hexstring_of_int i =
       let times = num / h in
       hexstring_of_int_inner t (Seq.cons times acc) (num - (times * h))
   in
-  String.of_seq
-    (Seq.map hexchar_of_int
-       (seq_reverse (hexstring_of_int_inner lower_powers Seq.empty i)))
+  if i = 0 then "00"
+  else
+    String.of_seq
+      (Seq.map hexchar_of_int
+         (seq_reverse (hexstring_of_int_inner lower_powers Seq.empty i)))
 
 let xor_buffer b1 b2 =
   String.concat ""
