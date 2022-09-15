@@ -1,3 +1,3 @@
 (test
  (name runner)
- (libraries cryptopals ounit2 alcotest qcheck))
+ (libraries cryptopals ounit2 alcotest qcheck qcheck-alcotest))
